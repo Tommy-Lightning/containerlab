@@ -1,4 +1,4 @@
-name: evpn01
+name: nokia_lab
 
 topology:
   kinds:
