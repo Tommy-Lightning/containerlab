@@ -1,0 +1,57 @@
+name: evpn01
+
+topology:
+  kinds:
+    srl:
+      image: ghcr.io/nokia/srlinux:23.3.1
+    linux:
+      image: ghcr.io/hellt/network-multitool
+
+  nodes:
+    leaf1:
+      kind: srl
+      type: ixrd2
+    leaf2:
+      kind: srl
+      type: ixrd2
+    leaf3:
+      kind: srl
+      type: ixrd2
+    leaf4:
+      kind: srl
+      type: ixrd2
+    border-leaf1:
+      kind: srl
+      type: ixrd4
+    spine1:
+      kind: srl
+      type: ixrd3
+    spine2:
+      kind: srl
+      type: ixrd3
+    srv1:
+      kind: linux
+      exec:
+        - ip link set address 00:c1:ab:00:00:01 dev eth1
+        - ip link set address 00:c1:ab:00:00:02 dev eth2
+    srv2:
+      kind: linux
+      exec:
+        - ip link set address 00:c1:ab:00:00:03 dev eth1
+        - ip link set address 00:c1:ab:00:00:04 dev eth2
+
+  links:
+    # inter-switch links
+    - endpoints: ["leaf1:e1-48", "spine1:e1-1"]
+    - endpoints: ["leaf2:e1-48", "spine1:e1-2"]
+    - endpoints: ["leaf1:e1-49", "spine1:e1-1"]
+    - endpoints: ["leaf2:e1-49", "spine1:e1-2"]
+    - endpoints: ["leaf3:e1-50", "spine1:e1-1"]
+    - endpoints: ["leaf4:e1-50", "spine1:e1-2"]
+    - endpoints: ["leaf3:e1-51", "spine1:e1-1"]
+    - endpoints: ["leaf4:e1-51", "spine1:e1-2"]
+    # server links
+    - endpoints: ["srv1:eth1", "leaf1:e1-1"]
+    - endpoints: ["srv1:eth2", "leaf2:e1-1"]
+    - endpoints: ["srv2:eth1", "leaf3:e1-1"]
+    - endpoints: ["srv2:eth2", "leaf4:e1-1"]
