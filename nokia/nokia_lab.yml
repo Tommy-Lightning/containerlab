@@ -29,16 +29,16 @@ topology:
     spine2:
       kind: srl
       type: ixrd3
-    srv1:
-      kind: linux
-      exec:
-        - ip link set address 00:c1:ab:00:00:01 dev eth1
-        - ip link set address 00:c1:ab:00:00:02 dev eth2
-    srv2:
-      kind: linux
-      exec:
-        - ip link set address 00:c1:ab:00:00:03 dev eth1
-        - ip link set address 00:c1:ab:00:00:04 dev eth2
+    # srv1:
+    #   kind: linux
+    #   exec:
+    #     - ip link set address 00:c1:ab:00:00:01 dev eth1
+    #     - ip link set address 00:c1:ab:00:00:02 dev eth2
+    # srv2:
+    #   kind: linux
+    #   exec:
+    #     - ip link set address 00:c1:ab:00:00:03 dev eth1
+    #     - ip link set address 00:c1:ab:00:00:04 dev eth2
 
   links:
     # inter-switch links
