@@ -51,7 +51,7 @@ topology:
     - endpoints: ["leaf3:e1-51", "spine2:e1-3"]
     - endpoints: ["leaf4:e1-51", "spine2:e1-4"]
     # server links
-    - endpoints: ["srv1:eth1", "leaf1:e1-1"]
-    - endpoints: ["srv1:eth2", "leaf2:e1-1"]
-    - endpoints: ["srv2:eth1", "leaf3:e1-1"]
-    - endpoints: ["srv2:eth2", "leaf4:e1-1"]
+    # - endpoints: ["srv1:eth1", "leaf1:e1-1"]
+    # - endpoints: ["srv1:eth2", "leaf2:e1-1"]
+    # - endpoints: ["srv2:eth1", "leaf3:e1-1"]
+    # - endpoints: ["srv2:eth2", "leaf4:e1-1"]
