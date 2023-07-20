@@ -54,8 +54,8 @@ topology:
     - endpoints: ["spine1:e1-48", "spine2:e1-48"]
     - endpoints: ["spine1:e1-49", "spine2:e1-49"]
     # spine-b-leaf-links
-    - endpoints: ["spine1:e1-47", "border-leaf1:e1-1"]
-    - endpoints: ["spine2:e1-47", "border-leaf1:e1-2"]
+    - endpoints: ["spine1:e1-34", "border-leaf1:e1-1"]
+    - endpoints: ["spine2:e1-34", "border-leaf1:e1-2"]
     # server links
     - endpoints: ["srv1:eth1", "leaf1:e1-1"]
     - endpoints: ["srv1:eth2", "leaf2:e1-1"]
