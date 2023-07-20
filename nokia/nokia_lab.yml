@@ -5,8 +5,8 @@ topology:
     srl:
       image: ghcr.io/nokia/srlinux:23.3.1
     linux:
-      image: ghcr.io/hellt/network-multitool
-
+      image: ubuntu:22.04
+      
   nodes:
     leaf1:
       kind: srl
