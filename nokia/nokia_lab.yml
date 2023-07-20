@@ -29,27 +29,33 @@ topology:
     spine2:
       kind: srl
       type: ixrd3
-    # srv1:
-    #   kind: linux
-    #   exec:
-    #     - ip link set address 00:c1:ab:00:00:01 dev eth1
-    #     - ip link set address 00:c1:ab:00:00:02 dev eth2
-    # srv2:
-    #   kind: linux
-    #   exec:
-    #     - ip link set address 00:c1:ab:00:00:03 dev eth1
-    #     - ip link set address 00:c1:ab:00:00:04 dev eth2
+    srv1:
+      kind: linux
+      exec:
+        - ip link set address 00:c1:ab:00:00:01 dev eth1
+        - ip link set address 00:c1:ab:00:00:02 dev eth2
+    srv2:
+      kind: linux
+      exec:
+        - ip link set address 00:c1:ab:00:00:03 dev eth1
+        - ip link set address 00:c1:ab:00:00:04 dev eth2
 
   links:
-    # inter-switch links
+    # leaf-spine links
     - endpoints: ["leaf1:e1-48", "spine1:e1-1"]
     - endpoints: ["leaf2:e1-48", "spine1:e1-2"]
     - endpoints: ["leaf1:e1-49", "spine2:e1-1"]
     - endpoints: ["leaf2:e1-49", "spine2:e1-2"]
-    - endpoints: ["leaf3:e1-50", "spine1:e1-3"]
-    - endpoints: ["leaf4:e1-50", "spine1:e1-4"]
-    - endpoints: ["leaf3:e1-51", "spine2:e1-3"]
-    - endpoints: ["leaf4:e1-51", "spine2:e1-4"]
+    - endpoints: ["leaf3:e1-48", "spine1:e1-3"]
+    - endpoints: ["leaf4:e1-48", "spine1:e1-4"]
+    - endpoints: ["leaf3:e1-49", "spine2:e1-3"]
+    - endpoints: ["leaf4:e1-49", "spine2:e1-4"]
+    # spine-spine links
+    - endpoints: ["spine1:e1-48", "spine2:e1-48"]
+    - endpoints: ["spine1:e1-49", "spine2:e1-49"]
+    # spine-b-leaf-links
+    - endpoints: ["spine1:e1-47", "border-leaf1:e1-1"]
+    - endpoints: ["spine2:e1-47", "border-leaf1:e1-1"]
     # server links
     - endpoints: ["srv1:eth1", "leaf1:e1-1"]
     - endpoints: ["srv1:eth2", "leaf2:e1-1"]
