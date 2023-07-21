@@ -6,9 +6,6 @@ topology:
       image: ghcr.io/nokia/srlinux:23.3.1
     linux:
       image: ubuntu:22.04
-      ports:
-        - eth1
-        - eth2
       user: admin
       cmd: apt-get install -y openssh-server
 
