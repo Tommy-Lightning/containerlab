@@ -10,9 +10,7 @@ topology:
         - eth1
         - eth2
       user: admin
-      cmd:
-        - sudo apt-get update && apt-get upgrade -y
-        - apt-get install -y openssh-server
+      cmd: apt-get install -y openssh-server
 
   nodes:
     leaf1:
