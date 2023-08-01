@@ -65,6 +65,10 @@ set / network-instance default protocols bgp group eBGP-underlay import-policy a
 set / network-instance default protocols bgp group iBGP-underlay
 set / network-instance default protocols bgp group iBGP-underlay export-policy all
 set / network-instance default protocols bgp group iBGP-underlay import-policy all
+set / network-instance default protocols bgp group iBGP-underlay next-hop-self true
+set / network-instance default protocols bgp group iBGP-underlay peer-as 201
+set / network-instance default protocols bgp group iBGP-underlay afi-safi ipv4-unicast
+set / network-instance default protocols bgp group iBGP-underlay afi-safi ipv4-unicast admin-state enable
 set / network-instance default protocols bgp afi-safi ipv4-unicast
 set / network-instance default protocols bgp afi-safi ipv4-unicast admin-state enable
 set / network-instance default protocols bgp neighbor 192.168.11.5
@@ -83,12 +87,13 @@ set / network-instance default protocols bgp neighbor 192.168.21.5
 set / network-instance default protocols bgp neighbor 192.168.21.5 peer-as 901
 set / network-instance default protocols bgp neighbor 192.168.21.5 peer-group eBGP-underlay
 set / network-instance default protocols bgp neighbor 192.168.51.1
-set / network-instance default protocols bgp neighbor 192.168.51.1 peer-as 201
-set / network-instance default protocols bgp neighbor 192.168.51.1 peer-group eBGP-underlay
-set / network-instance default protocols bgp neighbor 192.168.51.1 next-hop-self true
+set / network-instance default protocols bgp neighbor 192.168.51.1 peer-group iBGP-underlay
+set / network-instance default protocols bgp neighbor 192.168.51.1 transport
+set / network-instance default protocols bgp neighbor 192.168.51.1 transport local-address 192.168.51.2
 set / network-instance default protocols bgp neighbor 192.168.51.5
-set / network-instance default protocols bgp neighbor 192.168.51.5 peer-as 201
-set / network-instance default protocols bgp neighbor 192.168.51.5 peer-group eBGP-underlay
-set / network-instance default protocols bgp neighbor 192.168.51.5 next-hop-self true
+set / network-instance default protocols bgp neighbor 192.168.51.5 peer-group iBGP-underlay
+set / network-instance default protocols bgp neighbor 192.168.51.5 transport
+set / network-instance default protocols bgp neighbor 192.168.51.5 transport local-address 192.168.51.6
+
 
 commit now

@@ -4,7 +4,7 @@ FROM ubuntu:latest
 RUN apt-get update && apt-get upgrade -y
  
 # Install Server Tools
-RUN apt-get install -y openssh-server sudo net-tools iproute2 netplan.io
+RUN apt-get install -y openssh-server sudo net-tools iproute2 netplan.io iputils-ping tcpdump
  
 # Set up configuration for SSH
 RUN mkdir /var/run/sshd

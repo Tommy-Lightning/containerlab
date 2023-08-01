@@ -1,0 +1,140 @@
+enter candidate
+
+# Create VXLAN VTEP interface
+set / tunnel-interface vxlan1
+set / tunnel-interface vxlan1 vxlan-interface 100 type bridged
+set / tunnel-interface vxlan1 vxlan-interface 100 ingress
+set / tunnel-interface vxlan1 vxlan-interface 100 ingress vni 100
+set / tunnel-interface vxlan1 vxlan-interface 101 type bridged
+set / tunnel-interface vxlan1 vxlan-interface 101 ingress
+set / tunnel-interface vxlan1 vxlan-interface 101 ingress vni 101
+set / tunnel-interface vxlan1 vxlan-interface 102 type bridged
+set / tunnel-interface vxlan1 vxlan-interface 102 ingress
+set / tunnel-interface vxlan1 vxlan-interface 102 ingress vni 102
+set / tunnel-interface vxlan1 vxlan-interface 200 type bridged
+set / tunnel-interface vxlan1 vxlan-interface 200 ingress
+set / tunnel-interface vxlan1 vxlan-interface 200 ingress vni 200
+# Create MAC VRFs
+set / network-instance vrf-100
+set / network-instance vrf-100 description MGMT
+set / network-instance vrf-100 type mac-vrf
+set / network-instance vrf-100 vxlan-interface vxlan1.100
+set / network-instance vrf-100 admin-state enable
+set / network-instance vrf-100 bridge-table
+set / network-instance vrf-100 bridge-table mac-limit
+set / network-instance vrf-100 bridge-table mac-limit maximum-entries 500
+set / network-instance vrf-100 bridge-table mac-learning
+set / network-instance vrf-100 bridge-table mac-learning admin-state enable
+set / network-instance vrf-100 bridge-table mac-learning aging
+set / network-instance vrf-100 bridge-table mac-learning aging admin-state enable
+set / network-instance vrf-100 bridge-table mac-learning aging age-time 600
+set / network-instance vrf-100 bridge-table mac-duplication
+set / network-instance vrf-100 bridge-table mac-duplication admin-state enable
+set / network-instance vrf-100 bridge-table mac-duplication monitoring-window 5
+set / network-instance vrf-100 bridge-table mac-duplication num-moves 3
+set / network-instance vrf-100 bridge-table mac-duplication hold-down-time 3
+set / network-instance vrf-100 bridge-table mac-duplication action blackhole
+set / network-instance vrf-101
+set / network-instance vrf-101 description STORAGE
+set / network-instance vrf-101 type mac-vrf
+set / network-instance vrf-101 vxlan-interface vxlan1.101
+set / network-instance vrf-101 admin-state enable
+set / network-instance vrf-101 bridge-table
+set / network-instance vrf-101 bridge-table mac-limit
+set / network-instance vrf-101 bridge-table mac-limit maximum-entries 500
+set / network-instance vrf-101 bridge-table mac-learning
+set / network-instance vrf-101 bridge-table mac-learning admin-state enable
+set / network-instance vrf-101 bridge-table mac-learning aging
+set / network-instance vrf-101 bridge-table mac-learning aging admin-state enable
+set / network-instance vrf-101 bridge-table mac-learning aging age-time 600
+set / network-instance vrf-101 bridge-table mac-duplication
+set / network-instance vrf-101 bridge-table mac-duplication admin-state enable
+set / network-instance vrf-101 bridge-table mac-duplication monitoring-window 5
+set / network-instance vrf-101 bridge-table mac-duplication num-moves 3
+set / network-instance vrf-101 bridge-table mac-duplication hold-down-time 3
+set / network-instance vrf-101 bridge-table mac-duplication action blackhole
+set / network-instance vrf-102
+set / network-instance vrf-102 description COMPUTE
+set / network-instance vrf-102 type mac-vrf
+set / network-instance vrf-102 vxlan-interface vxlan1.102
+set / network-instance vrf-102 admin-state enable
+set / network-instance vrf-102 bridge-table
+set / network-instance vrf-102 bridge-table mac-limit
+set / network-instance vrf-102 bridge-table mac-limit maximum-entries 500
+set / network-instance vrf-102 bridge-table mac-learning
+set / network-instance vrf-102 bridge-table mac-learning admin-state enable
+set / network-instance vrf-102 bridge-table mac-learning aging
+set / network-instance vrf-102 bridge-table mac-learning aging admin-state enable
+set / network-instance vrf-102 bridge-table mac-learning aging age-time 600
+set / network-instance vrf-102 bridge-table mac-duplication
+set / network-instance vrf-102 bridge-table mac-duplication admin-state enable
+set / network-instance vrf-102 bridge-table mac-duplication monitoring-window 5
+set / network-instance vrf-102 bridge-table mac-duplication num-moves 3
+set / network-instance vrf-102 bridge-table mac-duplication hold-down-time 3
+set / network-instance vrf-102 bridge-table mac-duplication action blackhole
+set / network-instance vrf-200
+set / network-instance vrf-200 description INTERNET
+set / network-instance vrf-200 type mac-vrf
+set / network-instance vrf-200 vxlan-interface vxlan1.200
+set / network-instance vrf-200 admin-state enable
+set / network-instance vrf-200 bridge-table
+set / network-instance vrf-200 bridge-table mac-limit
+set / network-instance vrf-200 bridge-table mac-limit maximum-entries 500
+set / network-instance vrf-200 bridge-table mac-learning
+set / network-instance vrf-200 bridge-table mac-learning admin-state enable
+set / network-instance vrf-200 bridge-table mac-learning aging
+set / network-instance vrf-200 bridge-table mac-learning aging admin-state enable
+set / network-instance vrf-200 bridge-table mac-learning aging age-time 600
+set / network-instance vrf-200 bridge-table mac-duplication
+set / network-instance vrf-200 bridge-table mac-duplication admin-state enable
+set / network-instance vrf-200 bridge-table mac-duplication monitoring-window 5
+set / network-instance vrf-200 bridge-table mac-duplication num-moves 3
+set / network-instance vrf-200 bridge-table mac-duplication hold-down-time 3
+set / network-instance vrf-200 bridge-table mac-duplication action blackhole
+# Create EVPN mapping for MAC-VRF
+set / network-instance vrf-100 protocols
+set / network-instance vrf-100 protocols bgp-evpn
+set / network-instance vrf-100 protocols bgp-evpn bgp-instance 1
+set / network-instance vrf-100 protocols bgp-evpn bgp-instance 1 admin-state enable
+set / network-instance vrf-100 protocols bgp-evpn bgp-instance 1 vxlan-interface vxlan1.100
+set / network-instance vrf-100 protocols bgp-evpn bgp-instance 1 evi 100
+set / network-instance vrf-100 protocols bgp-vpn
+set / network-instance vrf-100 protocols bgp-vpn bgp-instance 1
+set / network-instance vrf-100 protocols bgp-vpn bgp-instance 1 route-target
+set / network-instance vrf-100 protocols bgp-vpn bgp-instance 1 route-target export-rt target:100:100
+set / network-instance vrf-100 protocols bgp-vpn bgp-instance 1 route-target import-rt target:100:100
+set / network-instance vrf-101 protocols
+set / network-instance vrf-101 protocols bgp-evpn
+set / network-instance vrf-101 protocols bgp-evpn bgp-instance 1
+set / network-instance vrf-101 protocols bgp-evpn bgp-instance 1 admin-state enable
+set / network-instance vrf-101 protocols bgp-evpn bgp-instance 1 vxlan-interface vxlan1.101
+set / network-instance vrf-101 protocols bgp-evpn bgp-instance 1 evi 101
+set / network-instance vrf-101 protocols bgp-vpn
+set / network-instance vrf-101 protocols bgp-vpn bgp-instance 1
+set / network-instance vrf-101 protocols bgp-vpn bgp-instance 1 route-target
+set / network-instance vrf-101 protocols bgp-vpn bgp-instance 1 route-target export-rt target:100:101
+set / network-instance vrf-101 protocols bgp-vpn bgp-instance 1 route-target import-rt target:100:101
+set / network-instance vrf-102 protocols
+set / network-instance vrf-102 protocols bgp-evpn
+set / network-instance vrf-102 protocols bgp-evpn bgp-instance 1
+set / network-instance vrf-102 protocols bgp-evpn bgp-instance 1 admin-state enable
+set / network-instance vrf-102 protocols bgp-evpn bgp-instance 1 vxlan-interface vxlan1.102
+set / network-instance vrf-102 protocols bgp-evpn bgp-instance 1 evi 102
+set / network-instance vrf-102 protocols bgp-vpn
+set / network-instance vrf-102 protocols bgp-vpn bgp-instance 1
+set / network-instance vrf-102 protocols bgp-vpn bgp-instance 1 route-target
+set / network-instance vrf-102 protocols bgp-vpn bgp-instance 1 route-target export-rt target:100:102
+set / network-instance vrf-102 protocols bgp-vpn bgp-instance 1 route-target import-rt target:100:102
+set / network-instance vrf-200 protocols
+set / network-instance vrf-200 protocols bgp-evpn
+set / network-instance vrf-200 protocols bgp-evpn bgp-instance 1
+set / network-instance vrf-200 protocols bgp-evpn bgp-instance 1 admin-state enable
+set / network-instance vrf-200 protocols bgp-evpn bgp-instance 1 vxlan-interface vxlan1.200
+set / network-instance vrf-200 protocols bgp-evpn bgp-instance 1 evi 200
+set / network-instance vrf-200 protocols bgp-vpn
+set / network-instance vrf-200 protocols bgp-vpn bgp-instance 1
+set / network-instance vrf-200 protocols bgp-vpn bgp-instance 1 route-target
+set / network-instance vrf-200 protocols bgp-vpn bgp-instance 1 route-target export-rt target:100:200
+set / network-instance vrf-200 protocols bgp-vpn bgp-instance 1 route-target import-rt target:100:200
+
+commit now

@@ -1,0 +1,69 @@
+enter candidate
+
+# Put interface in lag2
+set / interface ethernet-1/1
+set / interface ethernet-1/1 description server2_eth1
+set / interface ethernet-1/1 ethernet
+set / interface ethernet-1/1 ethernet aggregate-id lag2
+# Configure lag2
+set / interface lag2
+set / interface lag2 description server2_lag
+set / interface lag2 admin-state enable
+set / interface lag2 vlan-tagging true
+set / interface lag2 subinterface 100
+set / interface lag2 subinterface 100 type bridged
+set / interface lag2 subinterface 100 vlan
+set / interface lag2 subinterface 100 vlan encap
+set / interface lag2 subinterface 100 vlan encap single-tagged
+set / interface lag2 subinterface 100 vlan encap single-tagged vlan-id 100
+set / interface lag2 subinterface 101
+set / interface lag2 subinterface 101 type bridged
+set / interface lag2 subinterface 101 vlan
+set / interface lag2 subinterface 101 vlan encap
+set / interface lag2 subinterface 101 vlan encap single-tagged
+set / interface lag2 subinterface 101 vlan encap single-tagged vlan-id 101
+set / interface lag2 subinterface 102
+set / interface lag2 subinterface 102 type bridged
+set / interface lag2 subinterface 102 vlan
+set / interface lag2 subinterface 102 vlan encap
+set / interface lag2 subinterface 102 vlan encap single-tagged
+set / interface lag2 subinterface 102 vlan encap single-tagged vlan-id 102
+set / interface lag2 subinterface 200
+set / interface lag2 subinterface 200 type bridged
+set / interface lag2 subinterface 200 vlan
+set / interface lag2 subinterface 200 vlan encap
+set / interface lag2 subinterface 200 vlan encap single-tagged
+set / interface lag2 subinterface 200 vlan encap single-tagged vlan-id 200
+set / interface lag2 lag
+set / interface lag2 lag lag-type lacp
+set / interface lag2 lag member-speed 100G
+set / interface lag2 lag lacp
+set / interface lag2 lag lacp interval FAST
+set / interface lag2 lag lacp lacp-mode ACTIVE
+set / interface lag2 lag lacp admin-key 25
+set / interface lag2 lag lacp system-id-mac 00:00:00:00:00:25
+set / interface lag2 lag lacp system-priority 25
+# Configure ethernet segment
+set / system network-instance
+set / system network-instance protocols
+set / system network-instance protocols evpn
+set / system network-instance protocols evpn ethernet-segments
+set / system network-instance protocols evpn ethernet-segments bgp-instance 1
+set / system network-instance protocols evpn ethernet-segments bgp-instance 1 ethernet-segment ES-2
+set / system network-instance protocols evpn ethernet-segments bgp-instance 1 ethernet-segment ES-2 admin-state enable
+set / system network-instance protocols evpn ethernet-segments bgp-instance 1 ethernet-segment ES-2 esi 01:25:25:25:25:25:25:00:00:01
+set / system network-instance protocols evpn ethernet-segments bgp-instance 1 ethernet-segment ES-2 interface lag2
+set / system network-instance protocols evpn ethernet-segments bgp-instance 1 ethernet-segment ES-2 multi-homing-mode all-active
+set / system network-instance protocols bgp-vpn
+set / system network-instance protocols bgp-vpn bgp-instance 1
+# Associate the LAG subinterfaces with the appropriate MAC VRFs
+set / network-instance vrf-100
+set / network-instance vrf-100 interface lag2.100
+set / network-instance vrf-101
+set / network-instance vrf-101 interface lag2.101
+set / network-instance vrf-102
+set / network-instance vrf-102 interface lag2.102
+set / network-instance vrf-200
+set / network-instance vrf-200 interface lag2.200
+
+commit now
