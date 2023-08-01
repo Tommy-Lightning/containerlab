@@ -1,0 +1,18 @@
+enter candidate
+
+# Configure IRB interfaces and subinterfaces
+set / interface irb1
+set / interface irb1 subinterface 200
+set / interface irb1 subinterface 200 ipv4
+set / interface irb1 subinterface 200 ipv4 address 185.47.227.1/24
+set / interface irb1 subinterface 200 ipv4 address 185.47.227.1/24 anycast-gw true
+set / interface irb0 subinterface 200 ipv4 admin-state enable
+set / interface irb1 subinterface 200 anycast-gw
+# Create layer 3 VRFs
+set / network-instance external
+set / network-instance external type ip-vrf
+set / network-instance external interface irb1.200
+# Associate L3 VRFs with L2 VRFs
+set / network-instance vrf-200 interface irb1.200
+
+commit now
