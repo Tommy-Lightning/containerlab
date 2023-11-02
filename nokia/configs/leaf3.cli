@@ -525,6 +525,15 @@ set / interface lag2 subinterface 200 vlan
 set / interface lag2 subinterface 200 vlan encap
 set / interface lag2 subinterface 200 vlan encap single-tagged
 set / interface lag2 subinterface 200 vlan encap single-tagged vlan-id 200
+set / interface lag2 lag
+set / interface lag2 lag lag-type lacp
+set / interface lag2 lag member-speed 100G
+set / interface lag2 lag lacp
+set / interface lag2 lag lacp interval FAST
+set / interface lag2 lag lacp lacp-mode ACTIVE
+set / interface lag2 lag lacp admin-key 25
+set / interface lag2 lag lacp system-id-mac 00:00:00:00:00:25
+set / interface lag2 lag lacp system-priority 25
 set / system network-instance
 set / system network-instance protocols
 set / system network-instance protocols evpn
