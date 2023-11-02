@@ -6,6 +6,17 @@ set / interface ethernet-1/2
 set / interface ethernet-1/2 subinterface 0
 set / interface ethernet-1/2 subinterface 0 ipv4 admin-state enable
 set / interface ethernet-1/2 subinterface 0 ipv4 address 192.168.21.5/30
+set / interface ethernet-1/36
+set / interface ethernet-1/36 admin-state enable
+set / interface ethernet-1/36 vlan-tagging true
+set / interface ethernet-1/36 subinterface 10
+set / interface ethernet-1/36 subinterface 10 ipv4 admin-state enable
+set / interface ethernet-1/36 subinterface 10 ipv4 address 100.64.0.0/31
+set / interface ethernet-1/36 subinterface 10 vlan encap single-tagged vlan-id 10
+set / interface ethernet-1/36 subinterface 20
+set / interface ethernet-1/36 subinterface 20 ipv4 admin-state enable
+set / interface ethernet-1/36 subinterface 20 ipv4 address 100.64.0.0/31
+set / interface ethernet-1/36 subinterface 20 vlan encap single-tagged vlan-id 20
 set / interface system0
 set / interface system0 admin-state enable
 set / interface system0 subinterface 0
@@ -66,45 +77,69 @@ set / tunnel-interface vxlan1
 set / tunnel-interface vxlan1 vxlan-interface 200 type bridged
 set / tunnel-interface vxlan1 vxlan-interface 200 ingress
 set / tunnel-interface vxlan1 vxlan-interface 200 ingress vni 200
-set / network-instance vrf-200
-set / network-instance vrf-200 description INTERNET
-set / network-instance vrf-200 type mac-vrf
-set / network-instance vrf-200 vxlan-interface vxlan1.200
-set / network-instance vrf-200 admin-state enable
-set / network-instance vrf-200 bridge-table
-set / network-instance vrf-200 bridge-table mac-limit
-set / network-instance vrf-200 bridge-table mac-limit maximum-entries 500
-set / network-instance vrf-200 bridge-table mac-learning
-set / network-instance vrf-200 bridge-table mac-learning admin-state enable
-set / network-instance vrf-200 bridge-table mac-learning aging
-set / network-instance vrf-200 bridge-table mac-learning aging admin-state enable
-set / network-instance vrf-200 bridge-table mac-learning aging age-time 600
-set / network-instance vrf-200 bridge-table mac-duplication
-set / network-instance vrf-200 bridge-table mac-duplication admin-state enable
-set / network-instance vrf-200 bridge-table mac-duplication monitoring-window 5
-set / network-instance vrf-200 bridge-table mac-duplication num-moves 3
-set / network-instance vrf-200 bridge-table mac-duplication hold-down-time 3
-set / network-instance vrf-200 bridge-table mac-duplication action blackhole
-set / network-instance vrf-200 protocols
-set / network-instance vrf-200 protocols bgp-evpn
-set / network-instance vrf-200 protocols bgp-evpn bgp-instance 1
-set / network-instance vrf-200 protocols bgp-evpn bgp-instance 1 admin-state enable
-set / network-instance vrf-200 protocols bgp-evpn bgp-instance 1 vxlan-interface vxlan1.200
-set / network-instance vrf-200 protocols bgp-evpn bgp-instance 1 evi 200
-set / network-instance vrf-200 protocols bgp-vpn
-set / network-instance vrf-200 protocols bgp-vpn bgp-instance 1
-set / network-instance vrf-200 protocols bgp-vpn bgp-instance 1 route-target
-set / network-instance vrf-200 protocols bgp-vpn bgp-instance 1 route-target export-rt target:100:200
-set / network-instance vrf-200 protocols bgp-vpn bgp-instance 1 route-target import-rt target:100:200
-set / interface irb1
-set / interface irb1 subinterface 200
-set / interface irb1 subinterface 200 ipv4
-set / interface irb1 subinterface 200 ipv4 address 185.47.227.1/24
-set / interface irb1 subinterface 200 ipv4 address 185.47.227.1/24 anycast-gw true
-set / interface irb0 subinterface 200 ipv4 admin-state enable
-set / interface irb1 subinterface 200 anycast-gw
-set / network-instance external
-set / network-instance external type ip-vrf
-set / network-instance external interface irb1.200
-set / network-instance vrf-200 interface irb1.200
+## Config for external connectivity ##
+# Create vxlan tunnel interfaces for ip vrfs
+set / tunnel-interface vxlan1 vxlan-interface 1000
+set / tunnel-interface vxlan1 vxlan-interface 1000 type routed
+set / tunnel-interface vxlan1 vxlan-interface 1000 ingress vni 1000
+set / tunnel-interface vxlan1 vxlan-interface 1001
+set / tunnel-interface vxlan1 vxlan-interface 1001 type routed
+set / tunnel-interface vxlan1 vxlan-interface 1001 ingress vni 1001
+set / tunnel-interface vxlan1 vxlan-interface 1002
+set / tunnel-interface vxlan1 vxlan-interface 1002 type routed
+set / tunnel-interface vxlan1 vxlan-interface 1002 ingress vni 1002
+set / tunnel-interface vxlan1 vxlan-interface 1003
+set / tunnel-interface vxlan1 vxlan-interface 1003 type routed
+set / tunnel-interface vxlan1 vxlan-interface 1003 ingress vni 1003
+# Configure ip vrfs for route sharing and external connectivity
+set / network-instance ip-vrf-management type ip-vrf
+set / network-instance ip-vrf-management vxlan-interface vxlan1.1000
+set / network-instance ip-vrf-management interface ethernet-1/36.10
+set / network-instance ip-vrf-management protocols bgp-evpn bgp-instance 1 admin-state enable
+set / network-instance ip-vrf-management protocols bgp-evpn bgp-instance 1 vxlan-interface vxlan1.1000
+set / network-instance ip-vrf-management protocols bgp-evpn bgp-instance 1 evi 1000
+set / network-instance ip-vrf-management protocols bgp-evpn bgp-instance 1 ecmp 8
+set / network-instance ip-vrf-management protocols bgp-vpn bgp-instance 1 route-target export-rt target:100:1000
+set / network-instance ip-vrf-management protocols bgp-vpn bgp-instance 1 route-target import-rt target:100:1000
+set / network-instance ip-vrf-management protocols bgp autonomous-system 65100
+set / network-instance ip-vrf-management protocols bgp router-id 100.64.0.0
+set / network-instance ip-vrf-management protocols bgp afi-safi ipv4-unicast admin-state enable
+set / network-instance ip-vrf-management protocols bgp group eBGP-mgmt export-policy all
+set / network-instance ip-vrf-management protocols bgp group eBGP-mgmt import-policy all
+set / network-instance ip-vrf-management protocols bgp neighbor 100.64.0.1
+set / network-instance ip-vrf-management protocols bgp neighbor 100.64.0.1 peer-as 65000
+set / network-instance ip-vrf-management protocols bgp neighbor 100.64.0.1 peer-group eBGP-mgmt
+set / network-instance ip-vrf-storage type ip-vrf
+set / network-instance ip-vrf-storage vxlan-interface vxlan1.1001
+set / network-instance ip-vrf-storage interface ethernet-1/36.20
+set / network-instance ip-vrf-storage protocols bgp-evpn bgp-instance 1 admin-state enable
+set / network-instance ip-vrf-storage protocols bgp-evpn bgp-instance 1 vxlan-interface vxlan1.1001
+set / network-instance ip-vrf-storage protocols bgp-evpn bgp-instance 1 evi 1001
+set / network-instance ip-vrf-storage protocols bgp-evpn bgp-instance 1 ecmp 8
+set / network-instance ip-vrf-storage protocols bgp-vpn bgp-instance 1 route-target export-rt target:100:1001
+set / network-instance ip-vrf-storage protocols bgp-vpn bgp-instance 1 route-target import-rt target:100:1001
+set / network-instance ip-vrf-storage protocols bgp autonomous-system 65100
+set / network-instance ip-vrf-storage protocols bgp router-id 100.64.0.2
+set / network-instance ip-vrf-storage protocols bgp afi-safi ipv4-unicast admin-state enable
+set / network-instance ip-vrf-storage protocols bgp group eBGP-storage export-policy all
+set / network-instance ip-vrf-storage protocols bgp group eBGP-storage import-policy all
+set / network-instance ip-vrf-storage protocols bgp neighbor 100.64.0.3
+set / network-instance ip-vrf-storage protocols bgp neighbor 100.64.0.3 peer-as 65000
+set / network-instance ip-vrf-storage protocols bgp neighbor 100.64.0.3 peer-group eBGP-storage
+set / network-instance ip-vrf-internet-customer type ip-vrf
+set / network-instance ip-vrf-internet-customer vxlan-interface vxlan1.1002
+set / network-instance ip-vrf-internet-customer protocols bgp-evpn bgp-instance 1 admin-state enable
+set / network-instance ip-vrf-internet-customer protocols bgp-evpn bgp-instance 1 vxlan-interface vxlan1.1002
+set / network-instance ip-vrf-internet-customer protocols bgp-evpn bgp-instance 1 evi 1002
+set / network-instance ip-vrf-internet-customer protocols bgp-evpn bgp-instance 1 ecmp 8
+set / network-instance ip-vrf-internet-customer protocols bgp-vpn bgp-instance 1 route-target export-rt target:100:1002
+set / network-instance ip-vrf-internet-customer protocols bgp-vpn bgp-instance 1 route-target import-rt target:100:1002
+set / network-instance ip-vrf-internet-private type ip-vrf
+set / network-instance ip-vrf-internet-private vxlan-interface vxlan1.1003
+set / network-instance ip-vrf-internet-private protocols bgp-evpn bgp-instance 1 admin-state enable
+set / network-instance ip-vrf-internet-private protocols bgp-evpn bgp-instance 1 vxlan-interface vxlan1.1003
+set / network-instance ip-vrf-internet-private protocols bgp-evpn bgp-instance 1 evi 1003
+set / network-instance ip-vrf-internet-private protocols bgp-evpn bgp-instance 1 ecmp 8
+set / network-instance ip-vrf-internet-private protocols bgp-vpn bgp-instance 1 route-target export-rt target:100:1003
+set / network-instance ip-vrf-internet-private protocols bgp-vpn bgp-instance 1 route-target import-rt target:100:1003
 

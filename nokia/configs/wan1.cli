@@ -1,0 +1,42 @@
+# Set up interfaces
+set / interface ethernet-1/1
+set / interface ethernet-1/1 admin-state enable
+set / interface ethernet-1/1 vlan-tagging true
+set / interface ethernet-1/1 subinterface 10
+set / interface ethernet-1/1 subinterface 10 ipv4 admin-state enable
+set / interface ethernet-1/1 subinterface 10 ipv4 address 100.64.0.1/31
+set / interface ethernet-1/1 subinterface 10 vlan encap single-tagged vlan-id 10
+set / interface ethernet-1/1 subinterface 20
+set / interface ethernet-1/1 subinterface 20 ipv4 admin-state enable
+set / interface ethernet-1/1 subinterface 20 ipv4 address 100.64.0.3/31
+set / interface ethernet-1/1 subinterface 20 vlan encap single-tagged vlan-id 20
+# Create routing policies
+set / routing-policy policy all
+set / routing-policy policy all default-action policy-result accept
+# Create network instances
+set / network-instance ip-vrf-management
+set / network-instance ip-vrf-management type ip-vrf
+set / network-instance ip-vrf-management interface ethernet-1/1.10
+set / network-instance ip-vrf-management protocols bgp
+set / network-instance ip-vrf-management protocols bgp autonomous-system 65000
+set / network-instance ip-vrf-management protocols bgp router-id 100.64.0.1
+set / network-instance ip-vrf-management protocols bgp afi-safi ipv4-unicast admin-state enable
+set / network-instance ip-vrf-management protocols bgp group eBGP-mgmt
+set / network-instance ip-vrf-management protocols bgp group eBGP-mgmt export-policy all
+set / network-instance ip-vrf-management protocols bgp group eBGP-mgmt import-policy all
+set / network-instance ip-vrf-management protocols bgp neighbor 100.64.0.0
+set / network-instance ip-vrf-management protocols bgp neighbor 100.64.0.0 peer-as 65100
+set / network-instance ip-vrf-management protocols bgp neighbor 100.64.0.0 peer-group eBGP-mgmt
+set / network-instance ip-vrf-storage
+set / network-instance ip-vrf-storage type ip-vrf
+set / network-instance ip-vrf-storage interface ethernet-1/1.20
+set / network-instance ip-vrf-storage protocols bgp
+set / network-instance ip-vrf-storage protocols bgp autonomous-system 65000
+set / network-instance ip-vrf-storage protocols bgp router-id 100.64.0.3
+set / network-instance ip-vrf-storage protocols bgp afi-safi ipv4-unicast admin-state enable
+set / network-instance ip-vrf-storage protocols bgp group eBGP-storage
+set / network-instance ip-vrf-storage protocols bgp group eBGP-storage export-policy all
+set / network-instance ip-vrf-storage protocols bgp group eBGP-storage import-policy all
+set / network-instance ip-vrf-storage protocols bgp neighbor 100.64.0.2
+set / network-instance ip-vrf-storage protocols bgp neighbor 100.64.0.2 peer-as 65100
+set / network-instance ip-vrf-storage protocols bgp neighbor 100.64.0.2 peer-group eBGP-storage

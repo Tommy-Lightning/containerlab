@@ -36,6 +36,13 @@ topology:
       kind: srl
       type: ixrd3
       startup-config: configs/spine2.cli
+    wan1:
+      kind: srl
+      type: ixrd2
+      startup-config: configs/wan1.cli
+    wan2:
+      kind: srl
+      type: ixrd2
     srv1:
       kind: linux
       binds:
@@ -54,9 +61,21 @@ topology:
         - ip link set bond0.102 address 00:00:00:10:20:12
         - ip a add 10.10.102.10/24 dev bond0.102
         - ip link set dev bond0.102 up
+        - ip link add link bond0 name bond0.105 type vlan id 105
+        - ip link set bond0.105 address 00:00:00:10:30:12
+        - ip a add 10.10.105.10/24 dev bond0.105
+        - ip link set dev bond0.105 up
+        - ip link add link bond0 name bond0.300 type vlan id 300
+        - ip link set bond0.300 address 00:00:00:30:00:12
+        - ip a add 10.10.200.10/24 dev bond0.300
+        - ip link set dev bond0.300 up
+        - ip link add link bond0 name bond0.301 type vlan id 301
+        - ip link set bond0.301 address 00:00:00:30:20:12
+        - ip a add 10.10.201.10/24 dev bond0.301
+        - ip link set dev bond0.301 up
         - ip link add link bond0 name bond0.200 type vlan id 200
         - ip link set bond0.200 address 00:00:00:20:00:12
-        - ip a add 185.47.227.10/24 dev bond0.200
+        - ip a add 185.47.227.130/24 dev bond0.200
         - ip link set dev bond0.200 up
     srv2:
       kind: linux
@@ -76,6 +95,22 @@ topology:
         - ip link set bond0.102 address 00:00:00:10:20:13
         - ip a add 10.10.102.20/24 dev bond0.102
         - ip link set dev bond0.102 up
+        - ip link add link bond0 name bond0.105 type vlan id 105
+        - ip link set bond0.105 address 00:00:00:10:30:13
+        - ip a add 10.10.105.20/24 dev bond0.105
+        - ip link set dev bond0.105 up
+        - ip link add link bond0 name bond0.300 type vlan id 300
+        - ip link set bond0.300 address 00:00:00:30:00:13
+        - ip a add 10.10.200.20/24 dev bond0.300
+        - ip link set dev bond0.300 up
+        - ip link add link bond0 name bond0.301 type vlan id 301 
+        - ip link set bond0.301 address 00:00:00:30:10:13
+        - ip a add 10.10.201.20/24 dev bond0.301
+        - ip link set dev bond0.301 up
+        - ip link add link bond0 name bond0.200 type vlan id 200
+        - ip link set bond0.200 address 00:00:00:20:00:13
+        - ip a add 185.47.227.140/24 dev bond0.200
+        - ip link set dev bond0.200 up
 
   links:
     # leaf-spine links
@@ -98,3 +133,7 @@ topology:
     - endpoints: ["srv1:eth2", "leaf2:e1-1"]
     - endpoints: ["srv2:eth1", "leaf3:e1-1"]
     - endpoints: ["srv2:eth2", "leaf4:e1-1"]
+    # b-leaf-wan links
+    - endpoints: ["border-leaf1:e1-36", "wan1:e1-1"]
+    # wan-wan links
+    - endpoints: ["wan1:e1-48", "wan2:e1-48"]
