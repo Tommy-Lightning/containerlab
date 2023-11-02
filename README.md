@@ -63,12 +63,14 @@ To access the servers use the username `ubuntu` and the password `ubuntu`:
 | 104 | leaf4 | leaf4 private ASN |
 | 201 | spine1, spine2 | Spine private ASN |
 | 901 | border-leaf1 | border-leaf1 private ASN |
+| 65000 | wan1, wan2 | BGP ASN for WAN connectivity |
 
 ### Layer 2 Services Information
 
 #### VXLAN VTEP configuration
 
 ```
+
 enter candidate
     /tunnel-interface vxlan1 {
         vxlan-interface 1 {
@@ -83,12 +85,18 @@ commit now
 
 #### MAC-VRFs
 
-| MAC VRF Number | Description |
+| MAC VRFs| Description |
 | ----------- | ----------- |
-| 100 | MGMT |
-| 101 | STORAGE |
-| 102 | COMPUTE |
-| 200 | INTERNET |
+| mac-vrf-management | Management network |
+| mac-vrf-openstack-tenant | Openstack tenant network |
+| mac-vrf-openstack-api | Openstack API network |
+| mac-vrf-ironic | Openstack Ironic L2 network |
+| mac-vrf-openstack-lb-mgmt | Openstack load balancer L2 management network |
+| mac-vrf-provisioning | Server provisioning network |
+| mac-vrf-caph-private | Ceph private network |
+| mac-vrf-ceph-public | Ceph public network |
+| mac-vrf-internet-customer | Customer internet network |
+| mac-vrf-internet-private | Internal internet network |
 
 ####
 
@@ -142,6 +150,8 @@ ASN: 901
 | ----------- | ----------- |
 | 1/1.0 | 192.168.21.1 |
 | 1/2.0 | 192.168.21.5 |
+| 1/36.10 | 100.64.0.0 |
+| 1/36.20 | 100.64.0.2 |
 | sys0.0 | 10.0.10.1 |
 
 **spine1**
@@ -174,14 +184,40 @@ ASN: 201
 | 1/34.0 | 192.168.51.2 |
 | sys0.0 | 10.0.1.2 |
 
+**wan1**
+
+ASN: 65000
+
+| Interface      | IP Address |
+| ----------- | ----------- |
+| 1/1.10 | 100.64.0.0 |
+| 1/1.20 | 100.64.0.2 |
+| 1/48.10 | 100.64.2.1 |
+| 1/48.20 | 100.64.2.3 |
+| sys0.0 | 100.64.1.1 |
+
+**wan2**
+
+ASN: 65000
+
+| Interface      | IP Address |
+| ----------- | ----------- |
+| 1/48.10 | 100.64.2.1 |
+| 1/48.20 | 100.64.2.3 |
+| sys0.0 | 100.64.1.2 |
+
 ### IRB interface IP addresses
 
-| Interface | MAC VRF Association | IP Address |
-| ----------- | ----------- | ----------- |
-| irb0.100 | vrf-100 | 10.10.100.1/24 |
-| irb0.101 | vrf-101 | 10.10.101.1/24 |
-| irb0.102 | vrf-102 | 10.10.102.1/24 |
-| irb1.200 | vrf-200 | 185.47.227.1/24 |
+| Interface | MAC VRF Association | IP VRF Association | IP Address |
+| ----------- | ----------- | ----------- | ----------- |
+| irb0.100 | mac-vrf-management | ip-vrf-management | 10.10.100.1/24 |
+| irb0.101 | mac-vrf-openstack-tenant | ip-vrf-management | 10.10.101.1/24 |
+| irb0.102 | mac-vrf-openstack-api | ip-vrf-management | 10.10.102.1/24 |
+| irb0.105 | mac-vrf-provisioning | ip-vrf-management | 10.10.105.1/24 |
+| irb1.300 | mac-vrf-ceph-private | ip-vrf-storage | 10.10.200.1/24 |
+| irb1.301 | mac-vrf-ceph-public | ip-vrf-storage | 10.10.200.1/24 |
+| irb2.200 | mac-vrf-internet-customer | ip-vrf-internet-customer | 185.47.227.129/24 |
+| irb3.200 | mac-vrf-internet-private | ip-vrf-internet-private | 185.47.227.1/24 |
 
 ### Multi-Homing/Link Aggregation
 
